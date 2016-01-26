@@ -1,10 +1,22 @@
 package com.conti.parking.cli;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.List;
+import java.util.Properties;
 import java.util.Scanner;
+
+import com.conti.parking.utils.ParkingPropertiesUtil;
 
 public class ClientConsole {
 
-	public void getClientOption() {
+	int gateNumber;
+
+	int choice = -1;
+	int direction;
+
+	public void getClientOption(Properties properties) throws ParseException {
+		final ParkingPropertiesUtil propUtil = new ParkingPropertiesUtil(properties);
 		System.out.println("Please select one of the options below:");
 		System.out.println("A - For choosing the gate number or name, as desired");
 		System.out.println("B - for choosing the direction IN or OUT");
@@ -15,10 +27,13 @@ public class ClientConsole {
 		String option = scanner.nextLine();
 		option = (option.equals(option.toLowerCase())) ? option.toUpperCase() : option;
 		switch (option) {
-		case "A":
-			getGateNumber();
+		case "A": {
+			List<String> gateProperties = propUtil.getAllGateList();
+			getGateNumber(gateProperties);
+		}
 			break;
 		case "B":
+
 			break;
 		default:
 
@@ -26,7 +41,18 @@ public class ClientConsole {
 		scanner.close();
 	}
 
-	private void getGateNumber() {
-		
+	@SuppressWarnings("resource")
+	private void getGateNumber(List<String> gateProperties) throws ParseException {
+		int i = 0;
+		for (String gateName : gateProperties) {
+			System.out.println("For gate " + gateName + " press " + i++);
+		}
+		Scanner scanner = new Scanner(System.in);
+		choice = scanner.nextInt();
+		if (!(choice >= 0 && choice < gateProperties.size())) {
+			choice = (int) Math.random() % gateProperties.size();
+
+		}
 	}
+
 }
